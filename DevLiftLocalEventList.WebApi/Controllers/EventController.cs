@@ -17,19 +17,19 @@ namespace DevLiftLocalEventList.WebApi.Controllers
             _eventRepository = eventRepository;
             _eventTypeRepository = eventTypeRepository;
 
-            // TODO Remove before publish
-            // Use this block just to create a first fake event test in order to test on POSTMAN (to run the unit tests it isn´t necessary)
-            if (_eventRepository.GetAll().Result.Count == 0)
-            {
-                var eventType = new EventType("Celebration");
-                var eventDescription = "My celebration to get hired at DevLift";
-                var eventDate = new DateTime(2018, 03, 15);
+            //// TODO Remove before publish
+            //// Use this block just to create a first fake event test in order to test on POSTMAN (to run the unit tests it isn´t necessary)
+            //if (_eventRepository.GetAll().Result.Count == 0)
+            //{
+            //    var eventType = new EventType("Celebration");
+            //    var eventDescription = "My celebration to get hired at DevLift";
+            //    var eventDate = new DateTime(2018, 03, 15);
 
-                var newEvent = new Event(eventDescription, eventDate, eventType);
+            //    var newEvent = new Event(eventDescription, eventDate, eventType);
 
-                _eventRepository.Add(newEvent);
-                _eventRepository.SaveChanges();
-            }
+            //    _eventRepository.Add(newEvent);
+            //    _eventRepository.SaveChanges();
+            //}
         }
 
         [HttpGet]
