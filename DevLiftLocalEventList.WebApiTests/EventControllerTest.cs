@@ -44,10 +44,10 @@ namespace DevLiftLocalEventList.WebApiTests
             eventRepository
                 .Setup(repo => repo.GetOne(1))
                 .Returns(Task.FromResult(newEvent1));
-
-            // Setup EventType Repo
+            
             _eventRepository = eventRepository.Object;
 
+            // Setup EventType Repo
             eventTypeRepository
                 .Setup(repo => repo.GetOne(1))
                 .Returns(Task.FromResult(eventType));
@@ -69,7 +69,7 @@ namespace DevLiftLocalEventList.WebApiTests
         }
 
         [TestMethod]
-        public void EventControllerGetById()
+        public void EventControllerGetByIdTest()
         {
             // Arrange
             controller = new EventController(_eventRepository, _eventTypeRepository);
