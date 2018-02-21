@@ -14,8 +14,9 @@ namespace DevLiftLocalEventList.DomainTests
             var eventType = new EventType("Celebration");
             var description = "My celebration to get hired at DevLift";
             var date = new DateTime(2018, 03, 15);
+            var eventSummary = "This event is a party to celebrate this achievement and all my friends are invited to participate. Bring only your good vibes and happiness";
 
-            var newEvent = new Event(description, date, eventType);
+            var newEvent = new Event(description, eventSummary, date, eventType);
 
             //Assert
             Assert.AreEqual(description, newEvent.Description);
@@ -30,7 +31,21 @@ namespace DevLiftLocalEventList.DomainTests
         {
             //Arrange
             var eventType = new EventType("Celebration");
-            var newEvent = new Event(null, new DateTime(2018, 03, 15), eventType);
+            var eventSummary = "This event is a party to celebrate this achievement and all my friends are invited to participate. Bring only your good vibes and happiness";
+            var newEvent = new Event(null, eventSummary, new DateTime(2018, 03, 15), eventType);
+
+            //Assert
+            Assert.IsNotNull(newEvent);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void EventShouldRaiseExceptionWithInvalidSummary()
+        {
+            //Arrange
+            var eventType = new EventType("Celebration");
+            var description = "My celebration to get hired at DevLift";
+            var newEvent = new Event(description, null, new DateTime(2018, 03, 15), eventType);
 
             //Assert
             Assert.IsNotNull(newEvent);
@@ -43,7 +58,8 @@ namespace DevLiftLocalEventList.DomainTests
             //Arrange
             var eventType = new EventType("Celebration");
             var description = "My celebration to get hired at DevLift";
-            var newEvent = new Event(description, new DateTime(2018, 1, 1), eventType);
+            var eventSummary = "This event is a party to celebrate this achievement and all my friends are invited to participate. Bring only your good vibes and happiness";
+            var newEvent = new Event(description, eventSummary, new DateTime(2018, 1, 1), eventType);
 
             //Assert
             Assert.IsNotNull(newEvent);
@@ -55,7 +71,8 @@ namespace DevLiftLocalEventList.DomainTests
         {
             //Arrange
             var description = "My celebration to get hired at DevLift";
-            var newEvent = new Event(description, new DateTime(2018, 3, 15), null);
+            var eventSummary = "This event is a party to celebrate this achievement and all my friends are invited to participate. Bring only your good vibes and happiness";
+            var newEvent = new Event(description, eventSummary, new DateTime(2018, 3, 15), null);
 
             //Assert
             Assert.IsNotNull(newEvent);

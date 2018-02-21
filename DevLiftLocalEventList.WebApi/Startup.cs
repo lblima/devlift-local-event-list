@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using AutoMapper;
 
 namespace DevLiftLocalEventList.WebApi
 {
@@ -26,6 +27,16 @@ namespace DevLiftLocalEventList.WebApi
             services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<IEventTypeRepository, EventTypeRepository>();
 
+            services.AddAutoMapper();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("DevLiftPolicy", builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
+            });
             services.AddMvc();
 
             // Register the Swagger for api documentation
@@ -49,6 +60,8 @@ namespace DevLiftLocalEventList.WebApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors("DevLiftPolicy");
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
