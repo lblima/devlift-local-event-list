@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using DevLiftLocalEventList.Domain;
 using DevLiftLocalEventList.Domain.Interfaces;
+using DevLiftLocalEventList.WebApi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -38,9 +39,9 @@ namespace DevLiftLocalEventList.WebApi.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Event> Get()
+        public IEnumerable<EventViewModel> Get()
         {
-            return _eventRepository.GetAll().Result;
+            return _mapper.Map<List<Event>, List<EventViewModel>>(_eventRepository.GetAll().Result);
         }
 
         [HttpGet("{id}", Name = "GetEvent")]
@@ -52,35 +53,47 @@ namespace DevLiftLocalEventList.WebApi.Controllers
                 return NotFound();
             }
 
-            return new ObjectResult(_event);
+            return new ObjectResult(_mapper.Map<Event, EventViewModel>(_event));
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]Event newEvent)
+        public IActionResult Post([FromBody]EventViewModel postedEvent)
         {
-            if (newEvent == null)
+            if (postedEvent == null)
             {
-                return BadRequest();
-            }
-
-            if (newEvent.Type != null && newEvent.Type.Id == 0)
-            {
-                ModelState.AddModelError("Type", "You must provide the EventType ID { id: x }");
+                ModelState.AddModelError("Event", "Check all required fields");
                 return BadRequest(ModelState);
             }
+
+            if (postedEvent.TypeId == 0)
+            {
+                ModelState.AddModelError("EventType", "You must provide the TypeId");
+                return BadRequest(ModelState);
+            }
+
+            var eventType = _eventTypeRepository.GetOne(postedEvent.TypeId);
+
+            if (eventType.IsCompleted && eventType.Result == null)
+            {
+                ModelState.AddModelError("EventType", "The Event Type provided does not exists");
+                return BadRequest(ModelState);
+            }
+
+            var newEvent = new Event(postedEvent.Description, postedEvent.Summary, postedEvent.Date, eventType.Result);
 
             _eventRepository.Add(newEvent);
             _eventRepository.SaveChanges();
 
-            return CreatedAtRoute("GetEvent", new { id = newEvent.Id }, newEvent);
+            return CreatedAtRoute("GetEvent", new { id = newEvent.Id }, _mapper.Map<Event, EventViewModel>(newEvent));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]Event updatedEvent)
+        public IActionResult Put(int id, [FromBody]EventViewModel updatedEvent)
         {
-            if (updatedEvent == null || updatedEvent.Id != id)
+            if (updatedEvent == null)
             {
-                return BadRequest();
+                ModelState.AddModelError("Event", "Check all required fields");
+                return BadRequest(ModelState);
             }
 
             var originalEvent = _eventRepository.GetOne(id).Result;
@@ -95,13 +108,11 @@ namespace DevLiftLocalEventList.WebApi.Controllers
             originalEvent.Price = updatedEvent.Price;
             originalEvent.Summary = updatedEvent.Summary;
 
-            if (updatedEvent.Type != null)
+            if (updatedEvent.TypeId != 0)
             {
-                var eventType = _eventTypeRepository.GetOne(updatedEvent.Type.Id);
+                var eventType = _eventTypeRepository.GetOne(updatedEvent.TypeId);
                 if (eventType.IsCompletedSuccessfully && eventType.Result != null)
                 {
-                    var originalEventType = eventType.Result;
-                    originalEventType.Description = updatedEvent.Type.Description;
                     originalEvent.Type = eventType.Result;
                 }
             }

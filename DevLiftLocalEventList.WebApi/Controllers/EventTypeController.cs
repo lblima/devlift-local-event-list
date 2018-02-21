@@ -1,5 +1,7 @@
-﻿using DevLiftLocalEventList.Domain;
+﻿using AutoMapper;
+using DevLiftLocalEventList.Domain;
 using DevLiftLocalEventList.Domain.Interfaces;
+using DevLiftLocalEventList.WebApi.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -9,16 +11,18 @@ namespace DevLiftLocalEventList.WebApi.Controllers
     public class EventTypeController : Controller
     {
         private readonly IEventTypeRepository _eventTypeRepository;
+        private readonly IMapper _mapper;
 
-        public EventTypeController(IEventTypeRepository eventTypeRepository)
+        public EventTypeController(IEventTypeRepository eventTypeRepository, IMapper mapper)
         {
             _eventTypeRepository = eventTypeRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public IEnumerable<EventType> Get()
+        public IEnumerable<EventTypeViewModel> Get()
         {
-            return _eventTypeRepository.GetAll().Result;
+            return _mapper.Map<List<EventType>, List<EventTypeViewModel>>(_eventTypeRepository.GetAll().Result);
         }
 
         [HttpGet("{id}", Name = "GetEventType")]
@@ -30,28 +34,32 @@ namespace DevLiftLocalEventList.WebApi.Controllers
                 return NotFound();
             }
 
-            return new ObjectResult(_eventType);
+            return new ObjectResult(_mapper.Map<EventType, EventTypeViewModel>(_eventType));
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]EventType newEventType)
+        public IActionResult Post([FromBody]EventTypeViewModel posteEventType)
         {
-            if (newEventType == null)
+            if (posteEventType == null)
             {
-                return BadRequest();
+                ModelState.AddModelError("EventType", "Check all required fields");
+                return BadRequest(ModelState);
             }
+
+            var newEventType = new EventType(posteEventType.Description);
 
             _eventTypeRepository.Add(newEventType);
             _eventTypeRepository.SaveChanges();
 
-            return CreatedAtRoute("GetEventType", new { id = newEventType.Id }, newEventType);
+            return CreatedAtRoute("GetEventType", new { id = newEventType.Id }, _mapper.Map<EventType, EventTypeViewModel>(newEventType));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]EventType updatedEventType)
+        public IActionResult Put(int id, [FromBody]EventTypeViewModel updatedEventType)
         {
             if (updatedEventType == null || updatedEventType.Id != id)
             {
+                ModelState.AddModelError("EventType", "Check all required fields");
                 return BadRequest();
             }
 
