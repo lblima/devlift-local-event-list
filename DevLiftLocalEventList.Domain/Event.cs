@@ -12,16 +12,16 @@ namespace DevLiftLocalEventList.Domain
         public Event(string description, string summary, DateTime date, EventType type)
         {
             if (string.IsNullOrWhiteSpace(summary))
-                throw new ArgumentException(nameof(summary));
+                throw new ArgumentException("Please, enter a Summary.It´s a more detailed description about the event");
 
             if (string.IsNullOrWhiteSpace(description))
-                throw new ArgumentException(nameof(description));
+                throw new ArgumentException("Please, enter a description");
 
             if (date < DateTime.Today)
-                throw new ArgumentException(nameof(date));
+                throw new ArgumentException("The event date cannot be earlier than today");
 
             if (type == null)
-                throw new ArgumentNullException(nameof(type));
+                throw new ArgumentNullException("Please, select an event type");
 
             Description = description;
             Summary = summary;

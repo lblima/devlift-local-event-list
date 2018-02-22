@@ -79,7 +79,7 @@ namespace DevLiftLocalEventList.WebApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var newEvent = new Event(postedEvent.Description, postedEvent.Summary, postedEvent.Date, eventType.Result);
+            var newEvent = new Event(postedEvent.Description, postedEvent.Summary, postedEvent.Date, eventType.Result) { Price = postedEvent.Price, ImageLink = postedEvent.ImageLink };
 
             _eventRepository.Add(newEvent);
             _eventRepository.SaveChanges();

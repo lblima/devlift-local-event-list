@@ -8,6 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using AutoMapper;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 
 namespace DevLiftLocalEventList.WebApi
 {
@@ -59,6 +62,29 @@ namespace DevLiftLocalEventList.WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler(
+                    options =>
+                     {
+                         options.Run(
+                         async context =>
+                         {
+                             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                             context.Response.ContentType = "text/html";
+                             var ex = context.Features.Get<IExceptionHandlerFeature>();
+                             if (ex != null)
+                             {
+                                 var err = "<h1>Ops, something goes wrong :( Sorry, try again later</h1>";
+
+                             // Log exception here... ex.Error.Message && ex.Error.StackTrace
+
+                             await context.Response.WriteAsync(err).ConfigureAwait(false);
+                             }
+                         });
+                     }
+                    );
             }
 
             app.UseCors("DevLiftPolicy");
