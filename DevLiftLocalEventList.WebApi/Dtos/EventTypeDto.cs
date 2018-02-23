@@ -1,6 +1,6 @@
-﻿namespace DevLiftLocalEventList.WebApi.ViewModels
+﻿namespace DevLiftLocalEventList.WebApi.Dto
 {
-    public class EventTypeViewModel
+    public class EventTypeDto
     {
         public long Id { get; set; }
         public string Description { get; set; }

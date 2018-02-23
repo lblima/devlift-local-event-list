@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DevLiftLocalEventList.Domain;
 using DevLiftLocalEventList.Domain.Interfaces;
-using DevLiftLocalEventList.WebApi.ViewModels;
+using DevLiftLocalEventList.WebApi.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -11,18 +11,16 @@ namespace DevLiftLocalEventList.WebApi.Controllers
     public class EventTypeController : Controller
     {
         private readonly IEventTypeRepository _eventTypeRepository;
-        private readonly IMapper _mapper;
 
-        public EventTypeController(IEventTypeRepository eventTypeRepository, IMapper mapper)
+        public EventTypeController(IEventTypeRepository eventTypeRepository)
         {
             _eventTypeRepository = eventTypeRepository;
-            _mapper = mapper;
         }
 
         [HttpGet]
-        public IEnumerable<EventTypeViewModel> Get()
+        public IEnumerable<EventTypeDto> Get()
         {
-            return _mapper.Map<List<EventType>, List<EventTypeViewModel>>(_eventTypeRepository.GetAll().Result);
+            return Mapper.Map<List<EventType>, List<EventTypeDto>>(_eventTypeRepository.GetAll().Result);
         }
 
         [HttpGet("{id}", Name = "GetEventType")]
@@ -34,11 +32,11 @@ namespace DevLiftLocalEventList.WebApi.Controllers
                 return NotFound();
             }
 
-            return new ObjectResult(_mapper.Map<EventType, EventTypeViewModel>(_eventType));
+            return new ObjectResult(Mapper.Map<EventType, EventTypeDto>(_eventType));
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]EventTypeViewModel posteEventType)
+        public IActionResult Post([FromBody]EventTypeDto posteEventType)
         {
             if (posteEventType == null)
             {
@@ -51,11 +49,11 @@ namespace DevLiftLocalEventList.WebApi.Controllers
             _eventTypeRepository.Add(newEventType);
             _eventTypeRepository.SaveChanges();
 
-            return CreatedAtRoute("GetEventType", new { id = newEventType.Id }, _mapper.Map<EventType, EventTypeViewModel>(newEventType));
+            return CreatedAtRoute("GetEventType", new { id = newEventType.Id }, Mapper.Map<EventType, EventTypeDto>(newEventType));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]EventTypeViewModel updatedEventType)
+        public IActionResult Put(int id, [FromBody]EventTypeDto updatedEventType)
         {
             if (updatedEventType == null || updatedEventType.Id != id)
             {

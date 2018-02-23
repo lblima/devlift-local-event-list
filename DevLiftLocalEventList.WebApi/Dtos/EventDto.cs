@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace DevLiftLocalEventList.WebApi.ViewModels
+namespace DevLiftLocalEventList.WebApi.Dto
 {
-    public class EventViewModel
+    public class EventDto
     {
         public long Id { get; set; }
         public string Description { get; set; }

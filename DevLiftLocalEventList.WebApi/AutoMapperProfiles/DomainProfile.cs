@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using DevLiftLocalEventList.Domain;
-using DevLiftLocalEventList.WebApi.ViewModels;
+using DevLiftLocalEventList.WebApi.Dto;
 
 namespace DevLiftLocalEventList.WebApi.AutoMapperProfiles
 {
@@ -8,8 +8,8 @@ namespace DevLiftLocalEventList.WebApi.AutoMapperProfiles
     {
         public DomainProfile()
         {
-            CreateMap<Event, EventViewModel>().ReverseMap();
-            CreateMap<EventType, EventTypeViewModel>().ReverseMap();
+            CreateMap<Event, EventDto>().ReverseMap();
+            CreateMap<EventType, EventTypeDto>().ReverseMap();
         }
     }
 }

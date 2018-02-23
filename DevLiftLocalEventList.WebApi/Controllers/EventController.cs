@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using DevLiftLocalEventList.Domain;
 using DevLiftLocalEventList.Domain.Interfaces;
-using DevLiftLocalEventList.WebApi.ViewModels;
+using DevLiftLocalEventList.WebApi.Dto;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,16 +13,14 @@ namespace DevLiftLocalEventList.WebApi.Controllers
     {
         private readonly IEventRepository _eventRepository;
         private readonly IEventTypeRepository _eventTypeRepository;
-        private readonly IMapper _mapper;
 
-        public EventController(IEventRepository eventRepository, IEventTypeRepository eventTypeRepository, IMapper mapper)
+        public EventController(IEventRepository eventRepository, IEventTypeRepository eventTypeRepository)
         {
             _eventRepository = eventRepository;
             _eventTypeRepository = eventTypeRepository;
-            _mapper = mapper;
 
             // TODO Remove before publish
-            // Use this block just to create a first fake event test in order to test on POSTMAN (to run the unit tests it isn´t necessary)
+            // Use this block just to create a first fake event test in order to test on POSTMAN GET (to run the unit tests it isn´t necessary)
             if (_eventRepository.GetAll().Result.Count == 0)
             {
                 var eventType = new EventType("Celebration");
@@ -32,16 +30,16 @@ namespace DevLiftLocalEventList.WebApi.Controllers
 
                 var newEvent = new Event(eventDescription, summary, eventDate, eventType) { Price = 25 };
 
-
                 _eventRepository.Add(newEvent);
                 _eventRepository.SaveChanges();
             }
         }
 
         [HttpGet]
-        public IEnumerable<EventViewModel> Get()
+        public IEnumerable<EventDto> Get()
         {
-            return _mapper.Map<List<Event>, List<EventViewModel>>(_eventRepository.GetAll().Result);
+            System.Threading.Thread.Sleep(3000);
+            return Mapper.Map<List<Event>, List<EventDto>>(_eventRepository.GetAll().Result);
         }
 
         [HttpGet("{id}", Name = "GetEvent")]
@@ -53,11 +51,11 @@ namespace DevLiftLocalEventList.WebApi.Controllers
                 return NotFound();
             }
 
-            return new ObjectResult(_mapper.Map<Event, EventViewModel>(_event));
+            return new ObjectResult(Mapper.Map<Event, EventDto>(_event));
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]EventViewModel postedEvent)
+        public IActionResult Post([FromBody]EventDto postedEvent)
         {
             if (postedEvent == null)
             {
@@ -84,11 +82,11 @@ namespace DevLiftLocalEventList.WebApi.Controllers
             _eventRepository.Add(newEvent);
             _eventRepository.SaveChanges();
 
-            return CreatedAtRoute("GetEvent", new { id = newEvent.Id }, _mapper.Map<Event, EventViewModel>(newEvent));
+            return CreatedAtRoute("GetEvent", new { id = newEvent.Id }, Mapper.Map<Event, EventDto>(newEvent));
         }
 
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody]EventViewModel updatedEvent)
+        public IActionResult Put(int id, [FromBody]EventDto updatedEvent)
         {
             if (updatedEvent == null)
             {
