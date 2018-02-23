@@ -38,7 +38,6 @@ namespace DevLiftLocalEventList.WebApi.Controllers
         [HttpGet]
         public IEnumerable<EventDto> Get()
         {
-            System.Threading.Thread.Sleep(3000);
             return Mapper.Map<List<Event>, List<EventDto>>(_eventRepository.GetAll().Result);
         }
 
