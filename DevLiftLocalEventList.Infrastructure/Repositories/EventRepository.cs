@@ -3,6 +3,8 @@ using DevLiftLocalEventList.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
+using System;
 
 namespace DevLiftLocalEventList.Infrastructure.Repositories
 {
@@ -22,6 +24,12 @@ namespace DevLiftLocalEventList.Infrastructure.Repositories
         public Task<List<Event>> GetAll() =>
             _context.Events
                 .Include(x => x.Type).ToListAsync();
+
+        public Task<List<Event>> GetAllUpcoming() =>
+            _context.Events                
+                .Include(x => x.Type)
+                .Where(x => x.Date >= DateTime.Today)
+                .ToListAsync();        
 
         public Task<Event> GetOne(long id) => 
             _context.Events

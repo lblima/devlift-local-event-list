@@ -6,6 +6,7 @@ namespace DevLiftLocalEventList.Domain.Interfaces
     public interface IEventRepository
     {
         Task<List<Event>> GetAll();
+        Task<List<Event>> GetAllUpcoming();
         Task<Event> GetOne(long id);
         void Add(Event newEvent);
         void Remove(Event removedEvent);

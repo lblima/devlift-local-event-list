@@ -20,15 +20,15 @@ namespace DevLiftLocalEventList.WebApi.Controllers
             _eventTypeRepository = eventTypeRepository;
 
             // TODO Remove before publish
-            // Use this block just to create a first fake event test in order to test on POSTMAN GET (to run the unit tests it isn´t necessary)
+            // Use this block just to create a first fake event test (to run the unit tests it isn´t necessary)
             if (_eventRepository.GetAll().Result.Count == 0)
             {
                 var eventType = new EventType("Celebration");
                 var eventDescription = "My celebration to get hired at DevLift";
                 var eventDate = new DateTime(2018, 03, 15);
-                var summary = "his event is a party to celebrate this achievement and all my friends are invited to participate. Bring only your good vibes and happiness";
+                var summary = "This event is a party to celebrate my achievement and all my friends are invited to participate. Bring only your good vibes and happiness!";
 
-                var newEvent = new Event(eventDescription, summary, eventDate, eventType) { Price = 25 };
+                var newEvent = new Event(eventDescription, summary, eventDate, eventType);
 
                 _eventRepository.Add(newEvent);
                 _eventRepository.SaveChanges();
@@ -38,7 +38,7 @@ namespace DevLiftLocalEventList.WebApi.Controllers
         [HttpGet]
         public IEnumerable<EventDto> Get()
         {
-            return Mapper.Map<List<Event>, List<EventDto>>(_eventRepository.GetAll().Result);
+            return Mapper.Map<List<Event>, List<EventDto>>(_eventRepository.GetAllUpcoming().Result);
         }
 
         [HttpGet("{id}", Name = "GetEvent")]

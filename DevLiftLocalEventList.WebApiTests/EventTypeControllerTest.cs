@@ -79,5 +79,50 @@ namespace DevLiftLocalEventList.WebApiTests
             // Assert
             Assert.AreEqual(1, ((EventTypeDto)result.Value).Id);
         }
+
+        [TestMethod]
+        public void EventTypeControllerPostTest()
+        {
+            // Arrange
+            controller = new EventTypeController(_eventTypeRepository);
+            var eventTypeDescription = "Celebration";
+            var newEventType = new EventTypeDto() { Description = eventTypeDescription };
+
+            // Act
+            var result = controller.Post(newEventType) as ObjectResult;
+
+            // Assert
+            Assert.AreEqual(eventTypeDescription, ((EventTypeDto)result.Value).Description);
+        }
+
+        [TestMethod]
+        public void EventTypeControllerPutTest()
+        {
+            // Arrange
+            controller = new EventTypeController(_eventTypeRepository);
+            var eventTypeDescription = "Celebration changed";
+            var eventType = new EventTypeDto() { Id = 1, Description = eventTypeDescription };
+
+            // Act
+            var result = controller.Put(1, eventType);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(NoContentResult));
+            Assert.AreEqual(eventTypeDescription, _eventTypeRepository.GetOne(1).Result.Description);
+        }
+
+        [TestMethod]
+        public void EventTypeControllerDeleteTest()
+        {
+            // Arrange
+            controller = new EventTypeController(_eventTypeRepository);
+            var eventTypeId = 1;
+
+            // Act
+            var result = controller.Delete(eventTypeId);
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(NoContentResult));
+        }
     }
 }
