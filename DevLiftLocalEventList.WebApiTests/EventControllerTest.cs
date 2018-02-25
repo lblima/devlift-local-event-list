@@ -54,6 +54,10 @@ namespace DevLiftLocalEventList.WebApiTests
                 .Returns(Task.FromResult(mockEventList));
 
             eventRepository
+                .Setup(repo => repo.GetAllUpcoming())
+                .Returns(Task.FromResult(mockEventList));            
+
+            eventRepository
                 .Setup(repo => repo.GetOne(1))
                 .Returns(Task.FromResult(newEvent1));
             

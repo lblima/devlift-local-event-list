@@ -15,6 +15,16 @@ namespace DevLiftLocalEventList.WebApi.Controllers
         public EventTypeController(IEventTypeRepository eventTypeRepository)
         {
             _eventTypeRepository = eventTypeRepository;
+
+            // TODO Remove before publish
+            // Use this block just to create a first fake event type (browser tests) (to run the unit tests it isn´t necessary)
+            if (_eventTypeRepository.GetAll().Result.Count == 0)
+            {
+                var eventType = new EventType("Celebration");
+
+                _eventTypeRepository.Add(eventType);
+                _eventTypeRepository.SaveChanges();
+            }
         }
 
         [HttpGet]

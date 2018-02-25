@@ -20,22 +20,22 @@ namespace DevLiftLocalEventList.WebApi.Controllers
             _eventRepository = eventRepository;
             _eventTypeRepository = eventTypeRepository;
 
-            // TODO Remove before publish
-            // Use this block just to create a first fake event (browser tests) (to run the unit tests it isn´t necessary)
-            if (firstTypeLoad && _eventRepository.GetAll().Result.Count == 0)
-            {
-                var eventType = new EventType("Celebration");
-                var eventDescription = "My celebration to get hired at DevLift";
-                var eventDate = new DateTime(2018, 03, 15);
-                var summary = "This event is a party to celebrate my achievement and all my friends are invited to participate. Bring only your good vibes and happiness!";
+            //// TODO Remove before publish
+            //// Use this block just to create a first fake event (browser tests) (to run the unit tests it isn´t necessary)
+            //if (firstTypeLoad && _eventRepository.GetAll().Result.Count == 0)
+            //{
+            //    var eventType = new EventType("Celebration");
+            //    var eventDescription = "My celebration to get hired at DevLift";
+            //    var eventDate = new DateTime(2018, 03, 15);
+            //    var summary = "This event is a party to celebrate my achievement and all my friends are invited to participate. Bring only your good vibes and happiness!";
 
-                var newEvent = new Event(eventDescription, summary, eventDate, eventType);
+            //    var newEvent = new Event(eventDescription, summary, eventDate, eventType);
 
-                _eventRepository.Add(newEvent);
-                _eventRepository.SaveChanges();
+            //    _eventRepository.Add(newEvent);
+            //    _eventRepository.SaveChanges();
 
-                firstTypeLoad = false;
-            }
+            //    firstTypeLoad = false;
+            //}
         }
 
         [HttpGet]
