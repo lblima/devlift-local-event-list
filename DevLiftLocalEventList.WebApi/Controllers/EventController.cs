@@ -13,6 +13,7 @@ namespace DevLiftLocalEventList.WebApi.Controllers
     {
         private readonly IEventRepository _eventRepository;
         private readonly IEventTypeRepository _eventTypeRepository;
+        private static bool firstTypeLoad = true;
 
         public EventController(IEventRepository eventRepository, IEventTypeRepository eventTypeRepository)
         {
@@ -20,8 +21,8 @@ namespace DevLiftLocalEventList.WebApi.Controllers
             _eventTypeRepository = eventTypeRepository;
 
             // TODO Remove before publish
-            // Use this block just to create a first fake event test (to run the unit tests it isn´t necessary)
-            if (_eventRepository.GetAll().Result.Count == 0)
+            // Use this block just to create a first fake event (browser tests) (to run the unit tests it isn´t necessary)
+            if (firstTypeLoad && _eventRepository.GetAll().Result.Count == 0)
             {
                 var eventType = new EventType("Celebration");
                 var eventDescription = "My celebration to get hired at DevLift";
@@ -32,6 +33,8 @@ namespace DevLiftLocalEventList.WebApi.Controllers
 
                 _eventRepository.Add(newEvent);
                 _eventRepository.SaveChanges();
+
+                firstTypeLoad = false;
             }
         }
 
